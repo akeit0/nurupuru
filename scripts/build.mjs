@@ -1,5 +1,5 @@
 import { build, transform } from 'esbuild';
-import { readFile, mkdir, writeFile } from 'node:fs/promises';
+import { readFile, mkdir, writeFile, copyFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import { buildLegalPages } from './build-legal.mjs';
@@ -44,5 +44,6 @@ html = html.replace('<head>', `<head>\n<!-- Nurupuru — Unlicense\n${license.tr
 await mkdir(destination, { recursive: true });
 const output = path.join(destination, name);
 await writeFile(output, html, 'utf8');
+await copyFile(path.join(root, 'assets/social-card.jpg'), path.join(destination, 'social-card.jpg'));
 await buildLegalPages(root, { destination, appHref: name });
 console.log(`Built ${path.relative(root, output)} (${Buffer.byteLength(html).toLocaleString()} bytes)`);

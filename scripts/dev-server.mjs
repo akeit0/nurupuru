@@ -4,7 +4,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
-const types = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css' };
+const types = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.jpg': 'image/jpeg' };
 
 export function createDevServer() {
   return http.createServer(async (request, response) => {
@@ -18,13 +18,14 @@ export function createDevServer() {
     const filename = path.resolve(root, relative);
     // Serve application files only, bound to localhost.
     if (path.relative(root, filename).startsWith('..') || relative.includes('\\') ||
-        !(['index.html','terms.html','privacy.html','dist/nurupuru.html','dist/terms.html','dist/privacy.html'].includes(relative) || relative.startsWith('src/')) ||
+        !(['index.html','terms.html','privacy.html','social-card.jpg','assets/social-card.jpg','dist/social-card.jpg','dist/nurupuru.html','dist/terms.html','dist/privacy.html'].includes(relative) || relative.startsWith('src/')) ||
         !types[path.extname(filename)]) {
       response.writeHead(404);response.end('Not found');return;
     }
     try {
-      const data = await readFile(filename);
-      response.writeHead(200, { 'Content-Type': `${types[path.extname(filename)]}; charset=utf-8`, 'Cache-Control': 'no-store' });
+      const data = await readFile(relative === 'social-card.jpg' ? path.join(root, 'assets/social-card.jpg') : filename);
+      const type = types[path.extname(filename)];
+      response.writeHead(200, { 'Content-Type': type + (type.startsWith('text/') ? '; charset=utf-8' : ''), 'Cache-Control': 'no-store' });
       response.end(request.method === 'HEAD' ? undefined : data);
     } catch {
       response.writeHead(404);response.end('Not found');

@@ -12,6 +12,7 @@
     "dev": "node scripts/dev-server.mjs",
     "build": "node scripts/build.mjs",
     "build:pages": "node scripts/build.mjs --pages",
+    "build:social-card": "node scripts/build-social-card.mjs",
     "build:wasm": "node scripts/build-wasm.mjs",
     "test": "npm run build && node tests/run.cjs",
     "test:ui": "npm run build && node tests/ui.test.cjs"

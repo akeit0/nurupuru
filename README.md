@@ -54,7 +54,7 @@ npm run build
 公開先を変更する場合：
 
 1. GitHubに公開用のリポジトリを作成します。
-2. `package.json` のリポジトリURLと `src/app-info.js` の `GITHUB_REPOSITORY` を変更します。`REPOSITORY_PUBLISHED` は公開済みなら `true` にします。
+2. `package.json` のリポジトリURLと `src/app-info.js` の `GITHUB_REPOSITORY` を変更します。`REPOSITORY_PUBLISHED` は公開済みなら `true` にします。`index.html` のOGP・Xカードの公開URLと画像URLも変更します。
 3. リポジトリの **Settings → Pages → Build and deployment → Source** を **GitHub Actions** にします。
 4. このrepoの `main` をpushします。デプロイ後のURLはworkflowの `github-pages` 環境に表示されます。このrepoの公開先は [https://akeit0.github.io/nurupuru/](https://akeit0.github.io/nurupuru/) です。
 
@@ -64,7 +64,9 @@ npm run build
 npm run build:pages
 ```
 
-`dist/pages/` に `index.html`、`terms.html`、`privacy.html` を生成します。このフォルダだけを配信するため、ソース・テスト・開発用ファイルはPagesに含まれません。規約ページからアプリへのリンクも相対URLになり、`/nurupuru/` 以下で動きます。
+`dist/pages/` に `index.html`、`terms.html`、`privacy.html`、`social-card.jpg` を生成します。このフォルダだけを配信するため、ソース・テスト・開発用ファイルはPagesに含まれません。規約ページからアプリへのリンクも相対URLになり、`/nurupuru/` 以下で動きます。
+
+リンクのサムネイルは `assets/social-card.jpg`（1200×630）です。通常のビルドではこの画像をコピーし、HTMLには埋め込みません。画像を変更する場合は、日本語フォントのある環境で `npm run build:social-card` を実行し、生成された画像もコミットします。描画内容は `scripts/build-social-card.mjs`、OGP・Xカード設定は `index.html` で管理します。
 
 workflowは通常のビルドと全テストを先に実行し、成功した場合だけPages用ファイルをアップロード・デプロイします。設定の詳細は[GitHubのカスタムworkflowの案内](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages)を参照してください。
 
