@@ -11,6 +11,7 @@
   "scripts": {
     "dev": "node scripts/dev-server.mjs",
     "build": "node scripts/build.mjs",
+    "build:pages": "node scripts/build.mjs --pages",
     "build:wasm": "node scripts/build-wasm.mjs",
     "test": "npm run build && node tests/run.cjs",
     "test:ui": "npm run build && node tests/ui.test.cjs"

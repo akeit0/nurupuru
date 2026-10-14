@@ -14,9 +14,9 @@ function page(policy,appHref){
 <style>*{box-sizing:border-box;touch-action:manipulation}body{margin:0;padding:24px max(20px,env(safe-area-inset-left)) 32px;color:#25283a;background:#f5f6fa;font:15px/1.8 system-ui,-apple-system,sans-serif}main{max-width:760px;margin:auto}h1{font-size:24px;line-height:1.5}h2{font-size:20px}nav{display:flex;flex-wrap:wrap;gap:16px}a{color:#6947ad;display:inline-flex;align-items:center;min-height:44px;overflow-wrap:anywhere}section{border-top:1px solid #d7dbe7;margin-top:24px;padding-top:8px;scroll-margin-top:12px}li{margin:16px 0}li p{margin:4px 0}ol{padding-left:24px}footer{border-top:1px solid #d7dbe7;margin-top:24px;padding-top:16px}a:focus-visible{outline:2px solid #8764ce;outline-offset:4px}@media(prefers-color-scheme:dark){body{background:#11151d;color:#edf0fa}a{color:#c4b4ff}section,footer{border-color:#3b4050}}</style></head><body><main><h1>${escape(title)}</h1><nav aria-label="言語 / Language"><a href="#ja">日本語</a><a href="#en">English</a><a href="${policy==='terms'?'privacy.html':'terms.html'}">${policy==='terms'?'プライバシーポリシー / Privacy Policy':'利用規約 / Terms of Use'}</a></nav>${content}<footer><a href="${appHref}">${escape(LEGAL.ja.back)} / ${escape(LEGAL.en.back)}</a></footer></main></body></html>
 `;
 }
-export async function buildLegalPages(root){
+export async function buildLegalPages(root,{destination=path.join(root,'dist'),appHref='nurupuru.html'}={}){
   for(const policy of ['terms','privacy']){
     await writeFile(path.join(root,policy+'.html'),page(policy,'index.html'),'utf8');
-    await writeFile(path.join(root,'dist',policy+'.html'),page(policy,'nurupuru.html'),'utf8');
+    await writeFile(path.join(destination,policy+'.html'),page(policy,appHref),'utf8');
   }
 }

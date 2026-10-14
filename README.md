@@ -47,6 +47,27 @@ npm run build
 
 ビルドは利用規約・プライバシーポリシーのページも生成します。本文は `src/legal-content.js`、バージョン・GitHubリンク・リポジトリの公開状態は `src/app-info.js` で管理します。
 
+## GitHub Pagesへの公開
+
+`.github/workflows/pages.yml` が `main` へのpushでテスト・ビルド・デプロイを行います。Actions画面の「Deploy GitHub Pages」から手動実行もできます。追加のSecretやZigのインストールは不要です。
+
+初回の設定：
+
+1. GitHubに公開リポジトリ `akeit0/nurupuru` を作成します。
+2. `src/app-info.js` の `REPOSITORY_PUBLISHED` を `true` にし、GitHubリンクの「準備中」を外します。
+3. リポジトリの **Settings → Pages → Build and deployment → Source** を **GitHub Actions** にします。
+4. このrepoの `main` をpushします。デプロイ後のURLはworkflowの `github-pages` 環境に表示されます。予定URLは `https://akeit0.github.io/nurupuru/` です。
+
+ローカルで公開用ファイルを生成する場合：
+
+```sh
+npm run build:pages
+```
+
+`dist/pages/` に `index.html`、`terms.html`、`privacy.html` を生成します。このフォルダだけを配信するため、ソース・テスト・開発用ファイルはPagesに含まれません。規約ページからアプリへのリンクも相対URLになり、`/nurupuru/` 以下で動きます。
+
+workflowは通常のビルドと全テストを先に実行し、成功した場合だけPages用ファイルをアップロード・デプロイします。設定の詳細は[GitHubのカスタムworkflowの案内](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages)を参照してください。
+
 ## テスト
 
 ```sh

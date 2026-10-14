@@ -5,6 +5,9 @@ import path from 'node:path';
 import { buildLegalPages } from './build-legal.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
+const pages = process.argv.includes('--pages');
+const destination = path.join(root, pages ? 'dist/pages' : 'dist');
+const name = pages ? 'index.html' : 'nurupuru.html';
 const result = await build({
   absWorkingDir: root,
   entryPoints: ['src/main.js'],
@@ -38,9 +41,8 @@ for (const [marker, inline] of replacements) {
 }
 const license = await readFile(path.join(root, 'LICENSE'), 'utf8');
 html = html.replace('<head>', `<head>\n<!-- Nurupuru — Unlicense\n${license.trim()}\n-->`);
-await mkdir(path.join(root, 'dist'), { recursive: true });
-const name = 'nurupuru.html';
-const output = path.join(root, 'dist', name);
+await mkdir(destination, { recursive: true });
+const output = path.join(destination, name);
 await writeFile(output, html, 'utf8');
-await buildLegalPages(root);
-console.log(`Built dist/${name} (${Buffer.byteLength(html).toLocaleString()} bytes)`);
+await buildLegalPages(root, { destination, appHref: name });
+console.log(`Built ${path.relative(root, output)} (${Buffer.byteLength(html).toLocaleString()} bytes)`);
