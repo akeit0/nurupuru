@@ -10,7 +10,7 @@ export function initEditorLayout({params,setWorkspace,requestRedraw}){
     const button=document.createElement('button');button.id=id;button.type='button';button.className='footer-btn mobile-only';button.textContent=label;button.setAttribute('aria-haspopup','dialog');button.setAttribute('aria-controls','settingsSheet');footer.append(button);return button;
   });
   const toggle=document.createElement('button');toggle.id='btnInspector';toggle.type='button';toggle.className='footer-btn desktop-only';toggle.textContent='設定';toggle.setAttribute('aria-controls','inspector');toggle.setAttribute('aria-expanded','true');document.querySelector('.footer-right').append(toggle);
-  const iconLabels={btnUndo:'戻す',btnRedo:'やり直し',btnUpload:'開く',btnExport:'書き出し',btnViewMenu:'メニュー',btnResetMotion:'リセット',maskToggle:'マスク',maskColorButton:'マスク設定',cursorToggle:'操作の円',maskControlsToggle:'マスク操作'};
+  const iconLabels={btnUndo:'戻す',btnRedo:'やり直し',btnUpload:'画像を選択',btnExport:'書き出し',btnViewMenu:'メニュー',btnResetMotion:'リセット',maskToggle:'マスク',maskColorButton:'マスク設定',cursorToggle:'操作の円',maskControlsToggle:'マスク操作'};
   for(const [id,label] of Object.entries(iconLabels)){const span=document.createElement('span');span.className='mobile-icon-label mobile-only';span.textContent=label;$(id).append(span);}
   for(const button of document.querySelectorAll('[data-mask-color]')){const span=document.createElement('span');span.className='mobile-only';span.textContent=button.title;button.append(span);}
   // Short, frequent choices are direct on mobile. Longer or occasional lists keep

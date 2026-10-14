@@ -39,8 +39,8 @@ for (const [marker, inline] of replacements) {
   if (html.split(marker).length !== 2) throw Error(`Missing or repeated build marker: ${marker}`);
   html = html.replace(marker, () => inline);
 }
-const license = await readFile(path.join(root, 'LICENSE'), 'utf8');
-html = html.replace('<head>', `<head>\n<!-- Nurupuru — Unlicense\n${license.trim()}\n-->`);
+const [license, notices] = await Promise.all(['LICENSE', 'THIRD_PARTY_NOTICES.txt'].map(name => readFile(path.join(root, name), 'utf8')));
+html = html.replace('<head>', `<head>\n<!-- Nurupuru — Unlicense\n${license.trim()}\n\n${notices.trim()}\n-->`);
 await mkdir(destination, { recursive: true });
 const output = path.join(destination, name);
 await writeFile(output, html, 'utf8');

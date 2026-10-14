@@ -21,12 +21,11 @@
       <div id="demoMenu" class="demo-menu" hidden role="group" aria-label="デモの種類"><button type="button" data-demo="outline">輪郭線あり <span>輪郭に沿って選びやすいサンプル</span></button><button type="button" data-demo="plain" class="chosen">シンプル <span>なめらかな形のサンプル</span></button></div></div>
     <button id="btnUndo" class="btn icon-only" title="元に戻す Ctrl+Z" disabled><svg viewBox="0 0 24 24"><path d="M9 14 4 9l5-5M4 9h11a5 5 0 0 1 0 10h-2"/></svg></button>
     <button id="btnRedo" class="btn icon-only" title="やり直す Ctrl+Shift+Z" disabled><svg viewBox="0 0 24 24"><path d="m15 14 5-5-5-5m5 5H9a5 5 0 0 0 0 10h2"/></svg></button>
-    <button id="btnUpload" class="btn"><svg viewBox="0 0 24 24"><path d="M12 16V3m-5 5 5-5 5 5M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg><span class="label-sm">画像を開く</span></button>
+    <button id="btnUpload" class="btn" aria-label="画像を選択" title="画像を選択"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8" cy="8" r="1.5"/><path d="m3 17 5-5 4 4 3-7 6 8"/></svg><span class="label-sm">画像を選択</span></button>
     <button id="btnExport" class="btn primary" title="アニメーションを書き出す" aria-label="書き出し"><svg viewBox="0 0 24 24"><path d="M12 3v13m-5-5 5 5 5-5M4 17v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg><span class="label-sm">書き出し</span></button>
     <button id="btnViewMenu" type="button" class="btn icon-only mobile-only" aria-label="表示・画像・ヘルプ" aria-haspopup="dialog" aria-controls="viewSheet"><svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg></button>
   </div>
   <input id="fileInput" type="file" accept="image/png,image/jpeg,image/webp" class="hidden">
-  <input id="backgroundInput" type="file" accept="image/png,image/jpeg,image/webp" class="hidden">
   <input id="projectInput" type="file" accept=".nurupuru,.json,application/json" class="hidden">
 </header>
 <div class="workspace">
@@ -44,7 +43,10 @@
     <div class="stage-title"><span class="dot"></span><strong id="fileLabel" data-i18n-skip>jelly-demo.png</strong><span id="dimensionsLabel">960 × 720 px</span><span id="recBadge" class="recording-pill">録画中</span><div class="stage-actions" role="group" aria-label="表示とヘルプ">
       <select id="theme" class="select" aria-label="テーマ"><option value="light">Light</option><option value="dark" selected>Dark</option></select>
       <label for="stageBg" class="stage-bg-label mobile-only">キャンバス背景</label>
-      <select id="stageBg" class="select" aria-label="キャンバス背景" title="背景画像は変形せず、前景の後ろに表示します。位置は移動ツールで調整できます。"><option value="checker">市松模様</option><option value="dark">暗い背景</option><option value="white">白い背景</option><option value="image" disabled>背景画像</option><option value="upload">画像を選ぶ…</option><option value="clear" disabled>背景画像を削除</option></select>
+      <select id="stageBg" class="select" aria-label="キャンバス背景" title="背景画像は変形せず、前景の後ろに表示します。位置は移動ツールで調整できます。"><option value="checker">市松模様</option><option value="dark">暗い背景</option><option value="white">白い背景</option></select>
+      <input id="backgroundInput" type="file" accept="image/png,image/jpeg,image/webp" class="hidden">
+      <button id="btnBackgroundUpload" type="button" class="footer-btn background-file-button" aria-label="背景画像を選択" title="背景画像を選択">背景画像を選択</button>
+      <button id="btnClearBackground" type="button" class="footer-btn background-file-button" aria-label="背景画像を削除" title="背景画像を削除" hidden>削除</button>
       <button id="cursorToggle" type="button" class="footer-btn stage-icon-button cursor-toggle" aria-pressed="true" aria-label="操作範囲の円を非表示にする" title="操作範囲の円を非表示にする"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M4 20 20 4"/></svg></button>
       <button id="maskControlsToggle" type="button" class="footer-btn stage-icon-button mask-controls-toggle" aria-pressed="true" aria-controls="maskFloating" aria-label="マスク操作を非表示にする" title="マスク操作を非表示にする"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h6m6 0h6M3 18h2m6 0h10"/><circle cx="12" cy="6" r="3"/><circle cx="8" cy="18" r="3"/><path class="off-mark" d="M3 21 21 3"/></svg></button>
       <button id="btnHelp" type="button" class="footer-btn stage-help-button" aria-haspopup="dialog" aria-controls="helpModal">? ヘルプ</button></div></div>

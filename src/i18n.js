@@ -91,6 +91,7 @@ const en={
   'ゆっくり左右に往復。':'A gentle side-to-side sway.','上下に弾む。':'An up-and-down bounce.','中心から伸縮。':'Expand and contract from the center.','細かく素早く振動。':'Quick, fine vibrations.',
   '時計回りの円運動。':'A simple clockwise circle.','反時計回りの円運動。':'A simple counterclockwise circle.',
   'Circleの開始角度を変えます。':"Set the circle's starting angle.",
+  '画像を選択':'Choose image','背景画像を選択':'Choose background','削除':'Remove',
   '揺れ方の種類':'Motion patterns','背景画像':'Background image','画像を選ぶ…':'Choose image…','背景画像を削除':'Remove background image','背景画像を読み込みました':'Background loaded','背景画像を削除しました':'Background removed','背景画像がありません':'Load a background image first',
   '背景画像は変形せず、前景の後ろに表示します。位置は移動ツールで調整できます。':'The background stays behind the foreground without deforming. Reposition it with Pan.','言語 / Language':'Language',
 };

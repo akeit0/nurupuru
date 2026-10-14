@@ -68,7 +68,7 @@ const {launchBrowser,appUrl,collectBrowserErrors}=require('./helpers.cjs');
       await page.locator('#stageBg').tap();assert.equal(await page.locator('#stageBg').evaluate(el=>el.matches(':open')),true,'styled picker opens in the sheet');
       await inViewport('#stageBg option');
       assert.equal(await page.locator('#stageBg').evaluate(el=>getComputedStyle(el,'::picker(select)').backgroundColor),await page.evaluate(()=>getComputedStyle(document.documentElement).getPropertyValue('--panel').trim()==='#11151d'?'rgb(17, 21, 29)':'rgb(255, 255, 255)'));
-      assert.equal(await page.locator('#stageBg option[value=image]').evaluate(el=>getComputedStyle(el).opacity),'0.5');
+      assert.equal(await page.locator('#stageBg option[value=image]').count(),0,'no dummy image option before upload');
       await page.screenshot({path:path.join(folder,'ux-mobile-dropdown.png')});await page.locator('#stageBg option[value=white]').tap();assert.equal(await page.evaluate(()=>window.nurupuru.backgroundMode),'white');
       await page.locator('#stageBg').tap();await page.locator('#stageBg option[value=checker]').tap();
     }

@@ -22,7 +22,7 @@ header{display:flex;align-items:center;gap:18px;border-bottom:1px solid var(--bo
 .rail{background:var(--panel);border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:center;gap:11px;padding-top:24px;z-index:2}
 .tool{position:relative;width:48px;min-height:51px;padding:8px 4px 6px;border:1px solid transparent;background:transparent;border-radius:12px;color:var(--muted);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px}
 .tool svg{width:21px;height:21px;stroke:currentColor;stroke-width:1.7;fill:none;stroke-linecap:round;stroke-linejoin:round}.tool small{font-size:10px;letter-spacing:.03em}.tool:hover{background:#242838;color:#fff}.tool.active{background:#322b4f;border-color:#65588c;color:#c7b9ff}.rail-break{width:25px;height:1px;background:var(--border);margin:4px 0}.tool::after{content:attr(data-key);position:absolute;right:-1px;top:3px;color:#77718f;font-size:9px}
-.stage-area{min-width:0;min-height:0;display:grid;grid-template-rows:48px minmax(0,1fr) 61px;background:#10131a}
+.stage-area{min-width:0;min-height:0;display:grid;grid-template-rows:minmax(48px,max-content) minmax(0,1fr) 61px;background:#10131a}
 .stage-title{display:flex;align-items:center;gap:10px;padding:0 21px;border-bottom:1px solid #242936;font-size:12px;color:var(--muted)}.stage-title .dot{width:7px;height:7px;background:#7bdcbb;border-radius:99px;box-shadow:0 0 8px #9ceccc66}.stage-title strong{color:#d5d8e4;font-size:12px;font-weight:600}.stage-title .small{margin-left:auto;font-size:11px}
 .stage{position:relative;overflow:hidden;min-width:0;min-height:0;touch-action:none;cursor:crosshair;background:var(--checker-a) conic-gradient(var(--checker-a) 25%,var(--checker-b) 0 50%,var(--checker-a) 0 75%,var(--checker-b) 0);background-size:30px 30px}
 .stage,.stage *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
@@ -57,7 +57,7 @@ details.advanced{border-bottom:1px solid var(--border);padding:0 23px}details.ad
 [hidden]{display:none!important}
 .stage-area{grid-template-columns:minmax(0,1fr)}
 .switch:has(input:focus-visible) .track{outline:2px solid var(--accent);outline-offset:3px}
-.stage-title{gap:11px;padding:0 14px}
+.stage-title{gap:11px;padding:6px 14px;min-height:48px}
 .stage-title #fileLabel{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;max-width:205px}
 .stage-title #dimensionsLabel{white-space:nowrap}
 .workspace-tabs{display:flex;flex:0 0 auto;padding:3px;gap:3px;background:#080c13;border:1px solid #303649;border-radius:11px}
@@ -166,9 +166,10 @@ header{position:relative;z-index:20}
 .motion-style-section .control{margin-top:18px}
 .context-secondary-action{min-width:0}
 
-.stage-actions{margin-left:auto;display:flex;align-items:center;gap:6px;flex:0 0 auto}
+.stage-actions{margin-left:auto;display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:6px;flex:0 1 auto;min-width:0}
 .stage-actions .select{height:28px;width:80px;font-size:11px;padding:0 6px}
 .stage-actions #stageBg{width:105px}
+.stage-actions .background-file-button{height:28px;font-size:11px;padding:0 8px;white-space:nowrap}
 .stage-help-button{height:28px;flex:0 0 auto;font-size:11px;padding:0 9px}
 .stage-icon-button{display:grid;place-items:center;width:28px;height:28px;min-width:28px;padding:0}
 .stage-icon-button svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round}
@@ -293,6 +294,7 @@ header{position:relative;z-index:20}
   .top-actions .btn svg{width:20px;height:20px}
   .top-actions .btn{flex-direction:column;gap:2px}
   .mobile-icon-label{font-size:9px;line-height:1.1;white-space:nowrap}
+  #btnUpload .mobile-icon-label{width:32px;white-space:normal;overflow-wrap:anywhere}
   .workspace{display:block;position:relative;min-height:0}
   .rail{position:absolute;bottom:0;left:0;right:0;height:calc(52px + env(safe-area-inset-bottom));flex-direction:row;justify-content:space-around;gap:0;padding:2px max(6px,env(safe-area-inset-right)) calc(2px + env(safe-area-inset-bottom)) max(6px,env(safe-area-inset-left));border-right:0;border-top:1px solid var(--border);background:#11151d80;z-index:10}
   .rail-break,.tool::after{display:none}
@@ -366,6 +368,7 @@ header{position:relative;z-index:20}
   .view-sheet .stage-actions .select{width:100%;grid-column:1 / span 3;height:44px;font-size:13px}
   .view-sheet .stage-actions .stage-bg-label{grid-column:1;font-size:11px;line-height:1.4;color:var(--dim)}
   .view-sheet .stage-actions #stageBg{width:100%;grid-column:2 / span 2}
+  .view-sheet .stage-actions #btnBackgroundUpload{grid-column:1 / span 2}
   .view-sheet .stage-actions .mobile-choices{grid-column:1 / -1}
   .view-sheet .stage-actions .footer-btn{width:100%;height:48px;font-size:12px}
   .view-sheet .stage-actions svg{width:22px;height:22px}

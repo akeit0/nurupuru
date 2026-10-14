@@ -49,14 +49,45 @@ const {launchBrowser,readStandalone,collectBrowserErrors}=require('./helpers.cjs
     let video;try{video=await videoEvent;}catch{throw Error(JSON.stringify(await page.evaluate(()=>({toast:document.getElementById('toast').textContent,status:document.getElementById('recordStatus').textContent,draws:recordedBackgroundDraws})))+' '+errors.join(';'));}
     assert.ok(fs.statSync(await video.path()).size>0,'background video is recorded');
     await page.locator('#closeExport').click();await page.locator('#stageBg').selectOption('checker');assert.equal(await page.evaluate(()=>!!window.nurupuru.background),true,'background can be hidden without losing it');
-    await page.locator('#stageBg').selectOption('image');await page.locator('#stageBg').selectOption('clear');assert.equal(await page.evaluate(()=>window.nurupuru.background),null);
+    await page.locator('#stageBg').selectOption('image');await page.locator('#btnClearBackground').click();assert.equal(await page.evaluate(()=>window.nurupuru.background),null);
     assert.equal(await page.evaluate(()=>window.nurupuru.renderer.background),null,'removal frees preview resources');
     assert.equal(await page.locator('#exportBg option[value=image]').isDisabled(),true);
     assert.deepEqual(await physics(),before);
     await page.locator('#backgroundInput').setInputFiles({name:'invalid.gif',mimeType:'image/gif',buffer:Buffer.from('invalid')});
     await page.waitForFunction(()=>document.getElementById('toast').textContent.includes('PNG'));
     assert.equal(await page.evaluate(()=>window.nurupuru.background),null,'failed load does not install a partial background');
+    // Exercise real picker activation, including the mobile modal menu.
+    for(const width of [320,390,811,844,900,1280]){
+      const mobile=width<=810;
+      const pickerPage=await browser.newPage({viewport:{width,height:844},isMobile:mobile,hasTouch:mobile});collectBrowserErrors(pickerPage,errors);
+      await pickerPage.setContent(readStandalone());await pickerPage.waitForFunction(()=>nurupuru?.mesh);
+      assert.deepEqual(await pickerPage.locator('#stageBg option').evaluateAll(options=>options.map(o=>o.value)),['checker','dark','white']);
+      assert.equal(await pickerPage.locator('#btnClearBackground').isVisible(),false);
+      const openMenu=async()=>{if(mobile&&!await pickerPage.locator('#viewSheet').evaluate(el=>el.open))await pickerPage.locator('#btnViewMenu').tap();};
+      const pick=async()=>{await openMenu();const event=pickerPage.waitForEvent('filechooser');if(mobile)await pickerPage.locator('#btnBackgroundUpload').tap();else await pickerPage.locator('#btnBackgroundUpload').click();const chooser=await event;
+        assert.equal(await chooser.element().getAttribute('id'),'backgroundInput');assert.equal(await pickerPage.locator('#viewSheet').evaluate(el=>el.open),mobile,'picker preserves the background settings overlay');if(mobile)assert.equal(await chooser.element().evaluate(el=>!!el.closest('#viewSheet')),true,'file input is inside the active dialog');return chooser;};
+      const cancelled=await pick();await cancelled.setFiles([]);assert.equal(await pickerPage.evaluate(()=>nurupuru.background),null,'cancelling does not install a background');
+      for(let repeat=0;repeat<2;repeat++){
+        const chooser=await pick();await chooser.setFiles({name:'background.png',mimeType:'image/png',buffer:Buffer.from(background,'base64')});
+        await pickerPage.waitForFunction(()=>nurupuru.backgroundMode==='image'&&document.getElementById('backgroundInput').value==='');
+        assert.equal(await pickerPage.locator('#stageBg option[value=image]').count(),1,'loaded image appears exactly once');
+      }
+      await openMenu();
+      for(const language of ['en','ja']){
+        await pickerPage.locator('#language').evaluate((el,value)=>{el.value=value;el.dispatchEvent(new Event('change',{bubbles:true}));},language);
+        await pickerPage.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+        const bounds=await pickerPage.locator('.stage-actions').boundingBox();assert.ok(bounds.x>=0&&bounds.x+bounds.width<=width,'background controls fit the viewport');
+        assert.equal(await pickerPage.locator('#btnBackgroundUpload').textContent(),language==='en'?'Choose background':'背景画像を選択');
+        assert.equal(await pickerPage.locator('#stageBg option[value=image]').textContent(),language==='en'?'Background image':'背景画像');
+        assert.equal(await pickerPage.locator('#btnBackgroundUpload').evaluate(el=>el.scrollWidth<=el.clientWidth),true,'button label fits');
+        if(!mobile){const title=await pickerPage.locator('.stage-title').boundingBox();assert.ok(bounds.x+bounds.width<=title.x+title.width,'controls stay inside the canvas header');}
+      }
+      if(mobile)assert.ok((await pickerPage.locator('#btnBackgroundUpload').boundingBox()).height>=44,'upload button has a touch target');
+      await pickerPage.locator('#btnClearBackground').click();assert.equal(await pickerPage.locator('#viewSheet').evaluate(el=>el.open),mobile,'clearing preserves the overlay');assert.equal(await pickerPage.locator('#stageBg option[value=image]').count(),0,'removal clears the image choice');
+      assert.equal(await pickerPage.locator('#btnClearBackground').isVisible(),false);assert.equal(await pickerPage.evaluate(()=>nurupuru.backgroundMode),'checker');
+      await pickerPage.close();
+    }
     assert.deepEqual(errors,[]);
-    console.log('PASS: user background upload, cover crop, preview/PNG compositing, video capture, transparency, reuse/removal and unchanged editor/physics state');
+    console.log('PASS: desktop/mobile picker activation, cancellation/reload, background controls/locales, cover crop, preview/PNG compositing, video capture, transparency, reuse/removal and unchanged editor/physics state');
   }finally{await browser.close();}
 })().catch(error=>{console.error(error);process.exitCode=1;});

@@ -13,6 +13,7 @@ const { launchBrowser, readStandalone } = require('./helpers.cjs');
     const html = readStandalone();
     assert.ok(!/<script\b[^>]*\bsrc=|<link\b[^>]*\brel="stylesheet"/i.test(html), 'standalone has no external scripts or CSS');
     assert.ok(html.includes('released into the public domain'), 'standalone includes Unlicense');
+    assert.ok(html.includes(fs.readFileSync(path.resolve(__dirname, '../THIRD_PARTY_NOTICES.txt'), 'utf8').trim()), 'standalone preserves third-party runtime notices');
     assert.equal((await fetch(origin + '/.git/config')).status, 404);
     assert.equal((await fetch(origin + '/src/missing.js')).status, 404);
     browser = await launchBrowser();

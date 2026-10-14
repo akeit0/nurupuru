@@ -124,7 +124,7 @@ const {launchBrowser,appUrl,collectBrowserErrors}=require('./helpers.cjs');
    await begin();await page.mouse.move(metrics.x,metrics.y);await page.mouse.down();await page.mouse.move(metrics.x+20,metrics.y+20);await page.mouse.up();
    await page.locator('#backgroundInput').setInputFiles(file);await page.waitForFunction(()=>window.nurupuru.backgroundPosition.x===0);
    assert.deepEqual(await page.evaluate(()=>window.nurupuru.backgroundPosition),{x:0,y:0,scale:1,target:'background'},'replacement resets position and scale');
-   if(width===320)await page.locator('#btnViewMenu').click();await page.locator('#stageBg').selectOption('clear');assert.equal(await controls.locator('[data-pan-target=background]').isDisabled(),true);assert.equal(await page.evaluate(()=>window.nurupuru.backgroundPosition.target),'canvas');assert.equal(await page.locator('#exportFrame option[value=background]').isDisabled(),true);assert.equal(await page.locator('#exportFrame').inputValue(),'foreground');
+   if(width===320)await page.locator('#btnViewMenu').click();await page.locator('#btnClearBackground').click();assert.equal(await controls.locator('[data-pan-target=background]').isDisabled(),true);assert.equal(await page.evaluate(()=>window.nurupuru.backgroundPosition.target),'canvas');assert.equal(await page.locator('#exportFrame option[value=background]').isDisabled(),true);assert.equal(await page.locator('#exportFrame').inputValue(),'foreground');
    await page.close();
   }
   assert.deepEqual(errors,[]);console.log('PASS: target-aware background pan/zoom, pointer anchor, viewport independence, unclipped pixels, PNG/video parity, texture reuse and unchanged editing state');

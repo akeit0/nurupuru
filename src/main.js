@@ -265,7 +265,7 @@ function exportSettings(){return exportUI.settings();}
 function captureDocument(){if(!imageCanvas)return null;finishBackgroundWheel();cancelPainting();if(mesh?.gripState)mesh.endGrab();return {image:imageCanvas,mask:maskCanvas,maskHistory,mesh,name:$('fileLabel').textContent,params:{...params},background:backgroundCanvas,backgroundPosition:{...backgroundPosition},stageBackground,panTarget,view:{zoom,panX,panY},time:simTime,undo:undoStack.slice(),redo:redoStack.slice(),demo:demoVariant,exports:exportSettings()};}
 function syncDocumentUI(exports){
   for(const key of ['substeps','iterations','quality','physicsBackend','fitMethod','grabFalloff','renderMode'])$(key).value=String(params[key]);$('pressure').checked=params.pressure;
-  for(const selector of ['#stageBg option[value=image]','#stageBg option[value=clear]','#exportBg option[value=image]','#exportFrame option[value=background]'])document.querySelector(selector).disabled=!backgroundCanvas;
+  syncBackgroundControls();
   exportUI.restoreSettings(exports);
   $('restoreDocument').disabled=!previousDocument;
   const visible=params.mask;setStageBackground(stageBackground);setMode(params.tool);params.mask=visible;setWorkspace(params.workspace);syncMaskColor();syncMeshInfo();syncZoom();applyLanguage();requestRedraw();
@@ -299,6 +299,16 @@ async function loadFile(file){if(!file)return;
     toast(resized?t('読み込みました。負荷軽減のため長辺を{limit}px以下に縮小しました。',{limit}):t('読み込みました。動かしたい部分を塗ってください。'));
   }catch(err){toast(t('画像を読み込めませんでした: {error}',{error:err.message}));}
 }
+function syncBackgroundControls(){
+  const select=$('stageBg');let option=select.querySelector('[value=image]');
+  if(backgroundCanvas){
+    if(!option){option=new Option('','image');option.dataset.i18nSkip='';select.add(option);}
+    option.textContent=t('背景画像');
+  }else option?.remove();
+  select.value=stageBackground;
+  $('btnClearBackground').hidden=!backgroundCanvas;
+  for(const selector of ['#exportBg option[value=image]','#exportFrame option[value=background]'])document.querySelector(selector).disabled=!backgroundCanvas;
+}
 function setStageBackground(mode){
   if(!['checker','dark','white','image'].includes(mode)||mode==='image'&&!backgroundCanvas)return;
   if(mode!=='image'&&panTarget==='background')setPanTarget('canvas');
@@ -327,7 +337,7 @@ async function loadBackgroundFile(file){
   if(!file)return;const job=++backgroundLoad;
   try{const {canvas}=await decodeImageFile(file);if(job!==backgroundLoad)return;
     forgetBackgroundHistory();backgroundCanvas=canvas;resetBackgroundPosition();renderer?.updateBackground(canvas);syncPanControls();
-    for(const selector of ['#stageBg option[value=image]','#stageBg option[value=clear]','#exportBg option[value=image]','#exportFrame option[value=background]'])document.querySelector(selector).disabled=false;
+    syncBackgroundControls();
     setStageBackground('image');$('exportBg').value='image';toast('背景画像を読み込みました');
   }catch(err){if(job===backgroundLoad)toast(t('画像を読み込めませんでした: {error}',{error:err.message}));}
 }
@@ -335,7 +345,7 @@ function clearBackground(){
   forgetBackgroundHistory();
   setPanTarget('canvas');resetBackgroundPosition();
   backgroundLoad++;backgroundCanvas=null;renderer?.updateBackground(null);exportUI.removeBackground();
-  syncPanControls();for(const selector of ['#stageBg option[value=image]','#stageBg option[value=clear]','#exportBg option[value=image]','#exportFrame option[value=background]'])document.querySelector(selector).disabled=true;
+  syncPanControls();syncBackgroundControls();
   if($('exportFrame').value==='background')$('exportFrame').value='foreground';
   if($('exportBg').value==='image')$('exportBg').value=exportUI.format==='png'?'transparent':'white';
   if(stageBackground==='image')setStageBackground('checker');else $('stageBg').value=stageBackground;
@@ -573,11 +583,9 @@ $('theme').addEventListener('change',e=>{
   document.documentElement.dataset.theme=e.target.value;
   writePreference('theme',e.target.value);
 });
-$('stageBg').addEventListener('change',e=>{
-  const choice=e.target.value;
-  if(choice==='upload'){$('stageBg').value=stageBackground;$('backgroundInput').click();}
-  else if(choice==='clear')clearBackground();else setStageBackground(choice);
-});
+$('stageBg').addEventListener('change',e=>setStageBackground(e.target.value));
+$('btnBackgroundUpload').onclick=()=>$('backgroundInput').click();
+$('btnClearBackground').onclick=clearBackground;
 $('backgroundInput').onchange=async()=>{await loadBackgroundFile($('backgroundInput').files?.[0]);$('backgroundInput').value='';};
 for(const button of document.querySelectorAll('[data-pan-target]'))button.onclick=()=>setPanTarget(button.dataset.panTarget);
 for(const button of document.querySelectorAll('[data-reset-background]'))button.onclick=()=>{finishBackgroundWheel();const before={...backgroundPosition};resetBackgroundPosition();finishBackgroundChange(before);};
@@ -588,7 +596,7 @@ backgroundScale.addEventListener('change',()=>{finishBackgroundChange(background
 backgroundScale.addEventListener('pointerup',()=>{finishBackgroundChange(backgroundScaleBefore);backgroundScaleBefore=null;});
 backgroundScale.addEventListener('pointercancel',()=>{if(backgroundScaleBefore){Object.assign(backgroundPosition,backgroundScaleBefore);syncPanControls();requestRedraw();}backgroundScaleBefore=null;});
 function applyLanguage(){
-  $('language').value=getLanguage();translateUI();appInfo.syncLanguage();syncToolSettings(params.tool);syncToolHint();syncMaskVisibility();syncCursorToggle();syncMaskControls();syncPlayButton();syncMeshInfo();syncMotionUI();
+  $('language').value=getLanguage();translateUI();appInfo.syncLanguage();syncBackgroundControls();syncToolSettings(params.tool);syncToolHint();syncMaskVisibility();syncCursorToggle();syncMaskControls();syncPlayButton();syncMeshInfo();syncMotionUI();
   for(const key of sliders)syncSlider(key);syncPhysicsStats();
   exportUI.syncLanguage();
   if(!mesh?.moving&&!params.autoPlaying)$('fpsLabel').textContent=t('待機');
