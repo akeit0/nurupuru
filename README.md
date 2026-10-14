@@ -51,12 +51,12 @@ npm run build
 
 `.github/workflows/pages.yml` が `main` へのpushでテスト・ビルド・デプロイを行います。Actions画面の「Deploy GitHub Pages」から手動実行もできます。追加のSecretやZigのインストールは不要です。
 
-初回の設定：
+公開先を変更する場合：
 
-1. GitHubに公開リポジトリ `akeit0/nurupuru` を作成します。
-2. `src/app-info.js` の `REPOSITORY_PUBLISHED` を `true` にし、GitHubリンクの「準備中」を外します。
+1. GitHubに公開用のリポジトリを作成します。
+2. `package.json` のリポジトリURLと `src/app-info.js` の `GITHUB_REPOSITORY` を変更します。`REPOSITORY_PUBLISHED` は公開済みなら `true` にします。
 3. リポジトリの **Settings → Pages → Build and deployment → Source** を **GitHub Actions** にします。
-4. このrepoの `main` をpushします。デプロイ後のURLはworkflowの `github-pages` 環境に表示されます。予定URLは `https://akeit0.github.io/nurupuru/` です。
+4. このrepoの `main` をpushします。デプロイ後のURLはworkflowの `github-pages` 環境に表示されます。このrepoの公開先は [https://akeit0.github.io/nurupuru/](https://akeit0.github.io/nurupuru/) です。
 
 ローカルで公開用ファイルを生成する場合：
 
@@ -108,6 +108,6 @@ docs/physics.md  物理計算の構成
 
 アプリの利用については[利用規約](terms.html)と[プライバシーポリシー](privacy.html)を確認してください。画像・動画に必要な権利や許諾は利用者自身で確認してください。
 
-ソースコードは[Unlicense](LICENSE)です。お問い合わせ・不具合報告は[GitHub Issues](https://github.com/akeit0/nurupuru/issues)を使います。リポジトリは公開準備中です。
+ソースコードは[Unlicense](LICENSE)です。お問い合わせ・不具合報告は[GitHub Issues](https://github.com/akeit0/nurupuru/issues)を使います。リポジトリは公開されています。
 
 生成済みWASMに含まれるランタイム・数学コードのライセンス告知は [THIRD_PARTY_NOTICES.txt](THIRD_PARTY_NOTICES.txt) にあり、配布HTMLにも埋め込みます。
