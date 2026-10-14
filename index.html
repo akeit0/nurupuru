@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="ja" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark light">
+<title>ぬるぷる | Nurupuru</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2225%22%20height%3D%2225%22%20viewBox%3D%220%200%2036%2036%22%20fill%3D%22none%22%3E%3Cpath%20d%3D%22M5%2019c0-8%205-13%2013-13s13%205%2013%2013c0%207-5%2011-13%2011S5%2026%205%2019Z%22%20fill%3D%22%23B9A4FF%22%2F%3E%3Cpath%20d%3D%22M8%2016c1-6%205-9%2010-9%22%20stroke%3D%22%23F5EFFF%22%20stroke-width%3D%223%22%20stroke-linecap%3D%22round%22%2F%3E%3Cpath%20d%3D%22M13%2023c3%203%207%203%2010-1%22%20stroke%3D%22%23392A60%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%2F%3E%3C%2Fsvg%3E">
+<script src="./src/theme-init.js"></script>
+<link rel="stylesheet" href="./src/styles.css">
+</head>
+<body>
+<div id="app">
+<header>
+  <div class="mark"><div class="brand" data-i18n-skip><b lang="ja">ぬるぷる</b><span lang="en">Nurupuru</span></div></div>
+  <div class="header-label">塗る。触れる。<strong>やわらかく動かす。</strong></div>
+  <div class="grow"></div>
+  <div class="top-actions">
+    <select id="language" class="select language-select" aria-label="言語 / Language" data-i18n-skip><option value="ja">日本語</option><option value="en">English</option></select>
+    <div class="demo-wrap"><button id="btnDemo" class="btn demo-main" title="選択中のサンプルを読み込む"><span class="label-sm">デモ</span><svg viewBox="0 0 24 24"><path d="M5 4v5h5M5 9a8 8 0 1 1-1 7"/></svg></button><button id="btnDemoMenu" class="btn demo-arrow" type="button" aria-label="デモの種類を選ぶ" aria-expanded="false" aria-controls="demoMenu">⌄</button>
+      <div id="demoMenu" class="demo-menu" hidden role="group" aria-label="デモの種類"><button type="button" data-demo="outline">輪郭線あり <span>輪郭に沿って選びやすいサンプル</span></button><button type="button" data-demo="plain" class="chosen">シンプル <span>なめらかな形のサンプル</span></button></div></div>
+    <button id="btnUndo" class="btn icon-only" title="元に戻す Ctrl+Z" disabled><svg viewBox="0 0 24 24"><path d="M9 14 4 9l5-5M4 9h11a5 5 0 0 1 0 10h-2"/></svg></button>
+    <button id="btnRedo" class="btn icon-only" title="やり直す Ctrl+Shift+Z" disabled><svg viewBox="0 0 24 24"><path d="m15 14 5-5-5-5m5 5H9a5 5 0 0 0 0 10h2"/></svg></button>
+    <button id="btnUpload" class="btn"><svg viewBox="0 0 24 24"><path d="M12 16V3m-5 5 5-5 5 5M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg><span class="label-sm">画像を開く</span></button>
+    <button id="btnExport" class="btn primary" title="アニメーションを書き出す" aria-label="書き出し"><svg viewBox="0 0 24 24"><path d="M12 3v13m-5-5 5 5 5-5M4 17v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg><span class="label-sm">書き出し</span></button>
+    <button id="btnViewMenu" type="button" class="btn icon-only mobile-only" aria-label="表示・画像・ヘルプ" aria-haspopup="dialog" aria-controls="viewSheet"><svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg></button>
+  </div>
+  <input id="fileInput" type="file" accept="image/png,image/jpeg,image/webp" class="hidden">
+  <input id="backgroundInput" type="file" accept="image/png,image/jpeg,image/webp" class="hidden">
+  <input id="projectInput" type="file" accept=".nurupuru,.json,application/json" class="hidden">
+</header>
+<div class="workspace">
+  <nav class="rail" aria-label="編集ツール">
+    <button class="tool active" data-tool="brush" data-mode-tool="paint" data-key="B" title="塗る (B)" aria-label="ブラシ (B)" aria-pressed="true"><svg viewBox="0 0 24 24"><path d="M16 3 21 8 9 20 3 21 4 15 16 3Z"/><path d="m14 5 5 5M4 15l5 5"/></svg><small>塗る</small></button>
+    <button class="tool" data-tool="erase" data-mode-tool="paint" data-key="E" title="消す (E)" aria-label="消しゴム (E)" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="m8 4 12 12-6 6H7l-5-5 6-13ZM6 18l7-7M12 22h10"/></svg><small>消す</small></button>
+    <button class="tool" data-tool="fit" data-mode-tool="paint" data-key="F" title="輪郭フィット (F)" aria-label="輪郭フィット (F)" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M4 9V4h5m6 0h5v5m0 6v5h-5m-6 0H4v-5"/><path d="M8 12c0-3 2-5 5-5 4 0 4 3 4 6 0 3-2 4-5 4-2 0-4-2-4-5Z"/></svg><small>輪郭</small></button>
+    <button class="tool" data-tool="grab" data-mode-tool="motion" data-key="G" title="つかんで揺らす (G)" aria-label="つかむ (G)" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M7 13V8a2 2 0 1 1 4 0v3-6a2 2 0 1 1 4 0v6-5a2 2 0 0 1 4 0v8-4a2 2 0 0 1 4 0v5c0 4-3 7-7 7h-4c-3 0-5-1-7-5l-2-3a2 2 0 0 1 3-2l1 1Z" transform="translate(-1 -1) scale(.95)"/></svg><small>つかむ</small></button>
+    <button class="tool" data-tool="move" data-mode-tool="motion" data-key="V" title="移動揺れ (V)：画面を動かし、慣性で揺らす" aria-label="移動揺れ：画面移動＋慣性 (V)" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M12 2v20M2 12h20M8 6l4-4 4 4M8 18l4 4 4-4M6 8l-4 4 4 4M18 8l4 4-4 4" transform="translate(4 4) scale(.666667)" stroke-width="2.55"/><path d="M8 2q4-2 8 0M8 22q4 2 8 0M2 8q-2 4 0 8M22 8q2 4 0 8"/></svg><small>移動揺れ</small></button>
+    <div class="rail-break"></div>
+    <button class="tool" data-tool="pan" data-mode-tool="common" data-key="H" title="画面を移動 (H / Space)" aria-label="画面を移動 (H)" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M12 2v20M2 12h20M8 6l4-4 4 4M8 18l4 4 4-4M6 8l-4 4 4 4M18 8l4 4-4 4"/></svg><small>画面移動</small></button>
+    <button id="btnBottomTools" type="button" class="bottom-tools-toggle mobile-only" aria-expanded="true" aria-controls="quickControls" aria-label="ツールを隠す"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg><small id="bottomToolsToggleText">隠す</small></button>
+  </nav>
+  <main class="stage-area">
+    <div class="stage-title"><span class="dot"></span><strong id="fileLabel" data-i18n-skip>jelly-demo.png</strong><span id="dimensionsLabel">960 × 720 px</span><span id="recBadge" class="recording-pill">録画中</span><div class="stage-actions" role="group" aria-label="表示とヘルプ">
+      <select id="theme" class="select" aria-label="テーマ"><option value="light">Light</option><option value="dark" selected>Dark</option></select>
+      <label for="stageBg" class="stage-bg-label mobile-only">キャンバス背景</label>
+      <select id="stageBg" class="select" aria-label="キャンバス背景" title="背景画像は変形せず、前景の後ろに表示します。位置は移動ツールで調整できます。"><option value="checker">市松模様</option><option value="dark">暗い背景</option><option value="white">白い背景</option><option value="image" disabled>背景画像</option><option value="upload">画像を選ぶ…</option><option value="clear" disabled>背景画像を削除</option></select>
+      <button id="cursorToggle" type="button" class="footer-btn stage-icon-button cursor-toggle" aria-pressed="true" aria-label="操作範囲の円を非表示にする" title="操作範囲の円を非表示にする"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M4 20 20 4"/></svg></button>
+      <button id="maskControlsToggle" type="button" class="footer-btn stage-icon-button mask-controls-toggle" aria-pressed="true" aria-controls="maskFloating" aria-label="マスク操作を非表示にする" title="マスク操作を非表示にする"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h6m6 0h6M3 18h2m6 0h10"/><circle cx="12" cy="6" r="3"/><circle cx="8" cy="18" r="3"/><path class="off-mark" d="M3 21 21 3"/></svg></button>
+      <button id="btnHelp" type="button" class="footer-btn stage-help-button" aria-haspopup="dialog" aria-controls="helpModal">? ヘルプ</button></div></div>
+    <div class="stage bg-checker" id="stage">
+      <canvas id="glcanvas" tabindex="0" aria-label="画像編集キャンバス"></canvas>
+      <div class="mask-floating" id="maskFloating">
+        <button id="maskToggle" type="button" class="mask-view-toggle active" aria-label="マスクを非表示にする" aria-pressed="true" aria-keyshortcuts="M" title="マスクの表示切り替え (M)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12c2.7-4.2 6.1-6.3 10-6.3s7.3 2.1 10 6.3c-2.7 4.2-6.1 6.3-10 6.3S4.7 16.2 2 12Z"/><circle cx="12" cy="12" r="3"/><path class="off-mark" d="M3 3 21 21"/></svg><span id="maskToggleText">マスク表示中</span><span class="shortcut">M</span></button>
+        <button id="maskColorButton" type="button" class="mask-color-trigger" title="マスクの表示設定" aria-label="マスクの表示設定" aria-expanded="false" aria-controls="maskPalette"><span id="maskColorDot" class="mask-color-dot"></span><span class="color-caret">⌄</span></button>
+        <div class="mask-palette" id="maskPalette" hidden>
+          <label class="palette-title" for="maskView">マスクの表示</label>
+          <select id="maskView" class="select"><option value="strength" selected>動きやすさを色で表示</option><option value="single">動かす範囲を単色で表示</option></select>
+          <div id="maskLegend" class="strength-legend"><div class="strength-ramp"></div><div class="strength-labels"><span>0 固定</span><span>255 動きやすい</span></div></div>
+          <div class="palette-colors" id="maskSwatches" hidden>
+            <button type="button" class="color-option active" data-mask-color="#57F4AB" style="--swatch:#57F4AB" title="ミント" aria-label="ミント"></button>
+            <button type="button" class="color-option" data-mask-color="#25D8FF" style="--swatch:#25D8FF" title="シアン" aria-label="シアン"></button>
+            <button type="button" class="color-option" data-mask-color="#FFDF51" style="--swatch:#FFDF51" title="イエロー" aria-label="イエロー"></button>
+            <button type="button" class="color-option" data-mask-color="#FF669E" style="--swatch:#FF669E" title="ピンク" aria-label="ピンク"></button>
+            <button type="button" class="color-option" data-mask-color="#B7A0FF" style="--swatch:#B7A0FF" title="ラベンダー" aria-label="ラベンダー"></button>
+            <label class="color-custom" title="好きな色に変更"><input id="maskCustomColor" type="color" value="#57f4ab" aria-label="自由なマスク色">＋</label>
+          </div>
+          <label class="palette-opacity" for="maskOpacity">表示の濃さ <output id="maskOpacityOut">65%</output></label>
+          <input id="maskOpacity" type="range" min="15" max="95" value="65">
+          <label class="mask-auto-option"><input id="autoMaskVisibility" type="checkbox" checked aria-describedby="autoMaskVisibilityHint"><span>ツールで表示を自動切替</span></label>
+          <p id="autoMaskVisibilityHint" class="annotation">塗る・消す・輪郭では表示、つかむ・移動揺れ・画面移動では非表示。グループを移る時だけ切り替えます。</p>
+        </div>
+      </div>
+      <div id="brushCursor" class="cursor-ring" aria-hidden="true"></div>
+      <div class="drop-layer">ここに画像をドロップ</div>
+      <div class="stage-tip" id="stageTip"><span class="chip"><b id="modeName">ブラシ</b> <span id="modeHint">ドラッグで塗る・クリックで1回塗る</span></span></div>
+    </div>
+    <div class="stage-footer">
+      <div class="footer-left"><button id="btnPlay" class="footer-btn play-main" title="自動で揺らす (P)" aria-pressed="false"><span id="playIcon">▶</span> <span id="playText">揺らす</span></button><button id="btnResetMotion" class="footer-btn" title="変形をリセット" aria-label="変形をリセット">↻</button><span class="footer-note" id="meshInfo">軽量メッシュ</span></div>
+      <div class="footer-right"><span id="fpsLabel" class="footer-note">60 fps</span><button class="footer-btn" id="btnZoomOut" title="縮小">−</button><span id="zoomText" class="zoom-value">100%</span><button class="footer-btn" id="btnZoomIn" title="拡大">＋</button><button class="footer-btn" id="btnZoom100" title="等倍">1:1</button><button class="footer-btn" id="btnFitView" title="全体表示 (0)">全体</button></div>
+    </div>
+    <div id="quickControls" class="quick-controls mobile-only" role="group" aria-label="選択中のツール設定">
+      <div id="quickParameters" class="quick-parameters" role="group" aria-label="調整する項目"></div>
+      <input id="quickRange" type="range" aria-label="ブラシサイズ">
+      <span id="quickHint" hidden>ピンチで拡大・移動</span>
+      <div id="quickPanTargets" class="pan-targets" role="group" aria-label="移動する対象" hidden><button type="button" data-pan-target="canvas" aria-pressed="true">キャンバス</button><button type="button" data-pan-target="background" aria-pressed="false" disabled>背景</button><button type="button" data-reset-background disabled>リセット</button></div>
+      <button id="btnToolDetails" type="button" class="footer-btn" aria-haspopup="dialog" aria-controls="settingsSheet">詳細</button>
+    </div>
+  </main>
+  <aside class="inspector" aria-label="編集設定" id="inspector">
+    <div class="sheet-heading"><strong>編集設定</strong><button id="btnSheetPlay" class="footer-btn" type="button" aria-pressed="false">▶ 揺らす</button><button id="closeSettings" class="dismiss" type="button" aria-label="閉じる">×</button></div>
+    <div class="inspector-switch"><div class="workspace-tabs" role="tablist" aria-label="表示する設定"><button id="tabPaint" class="workspace-tab active" data-workspace="paint" role="tab" aria-selected="true" aria-controls="paintPanel">ツール設定</button><button id="tabMotion" class="workspace-tab" data-workspace="motion" role="tab" aria-selected="false" aria-controls="motionPanel" tabindex="-1">揺らし方</button><button id="tabMaterial" class="workspace-tab" data-workspace="material" role="tab" aria-selected="false" aria-controls="materialPanel" tabindex="-1">材質・反動</button></div></div>
+    <div id="paintPanel" class="panel-view" role="tabpanel" aria-labelledby="tabPaint">
+      <section class="section context-panel" data-context="brush erase">
+        <div class="section-header"><div class="section-title"><span class="section-no">01</span><span id="brushSectionTitle">ブラシ設定</span></div></div>
+        <p class="section-lead" id="brushContextHint">画像をなぞって動かす範囲を塗ります。マスクボタンで表示を切り替えられます。</p>
+        <div class="control"><label for="brushSize">ブラシサイズ <output id="brushSizeOut"></output></label><input id="brushSize" type="range" min="6" max="160" value="68"></div>
+        <div class="control" id="brushStrengthControl"><label for="brushStrength">動きやすさ <output id="brushStrengthOut"></output></label><input id="brushStrength" type="range" min="0" max="255" step="1" value="255"><div class="strength-ramp"></div><div class="strength-labels"><span>0 固定</span><span>255 動きやすい</span></div><p class="annotation">塗り重ねても中心の値は変わりません。境界はなめらかにつながります。</p></div>
+        <div class="mini-actions"><button id="btnFill">画像全体を塗る</button><button id="btnClear">マスクを消去</button></div>
+        <p class="annotation">色は動きやすさを示します。表示の濃さはキャンバス右上から変更できます。</p>
+      </section>
+      <section class="section context-panel" data-context="grab" hidden>
+        <div class="section-header"><div class="section-title"><span class="section-no">G</span> つかみ設定</div></div>
+        <p class="section-lead">塗った部分をドラッグして引っぱります。離すとバネの反動で揺れます。</p>
+        <div class="control"><label for="grabRadius">つかむ範囲 <output id="grabRadiusOut"></output></label><input id="grabRadius" type="range" min="35" max="300" value="140"><p class="annotation">キャンバス上の円がつかむ範囲です。</p></div>
+        <div class="control"><label for="grabFalloff">力の分布</label><select id="grabFalloff" class="select"><option value="linear">1乗</option><option value="quadratic" selected>2乗</option><option value="gaussian">正規分布（σ=半径/2）</option></select><p class="annotation">中心からの力の弱まり方を選びます。正規分布は円の外側にも弱い力が続きます。</p></div>
+        <div class="control"><label for="grip">追従力 <output id="gripOut"></output></label><input id="grip" type="range" min="0" max="100" value="70"><p class="annotation">高くすると指についてきやすくなります。</p></div>
+        <div class="mode-help"><span class="dot-bullet"></span><span>揺れそのものの材質・戻る速さは <b>「材質・反動」</b> で調整できます。</span></div>
+      </section>
+      <section class="section context-panel" data-context="fit" hidden>
+        <div class="section-header"><div class="section-title"><span class="section-no">F</span> 輪郭フィット</div></div>
+        <p class="section-lead">画像をクリックして領域を選択します。透過画像でも色選択が使えます。</p>
+        <div class="control"><label for="fitMethod">判定方法</label><select id="fitMethod" class="select"><option value="auto">自動で選択</option><option value="alpha">透過境界</option><option value="color">色の近さ</option></select></div>
+        <div class="control"><label for="contourTolerance">色の許容幅 <output id="contourToleranceOut"></output></label><input id="contourTolerance" type="range" min="5" max="100" value="32"></div>
+        <div class="mini-actions"><button type="button" id="btnFitClear" class="context-secondary-action">マスクを消去</button><button type="button" id="btnFitBrush" class="context-secondary-action">ブラシで微調整</button></div>
+      </section>
+      <section class="section context-panel" data-context="move" hidden>
+        <div class="section-header"><div class="section-title"><span class="section-no">V</span> 移動揺れ</div></div>
+        <p class="section-lead">画面全体をドラッグして動かします。移動・停止時の加速度がマスク内に伝わり、慣性で揺れます。</p>
+        <div class="mode-help"><span class="dot-bullet"></span><span>画像を直接つかむ操作ではありません。局所的に引っぱるには <b>G「つかむ」</b> を選んでください。</span></div>
+      </section>
+      <section class="section context-panel" data-context="pan" hidden>
+        <div class="section-header"><div class="section-title"><span class="section-no">H</span> 画面移動</div></div>
+        <div class="control"><label>移動する対象</label><div class="pan-targets" role="group" aria-label="移動する対象"><button type="button" data-pan-target="canvas" aria-pressed="true">キャンバス</button><button type="button" data-pan-target="background" aria-pressed="false" disabled>背景</button></div></div>
+        <p class="annotation">背景は1本指・マウスで位置、スクロールで倍率を調整。Space・2本指は常にキャンバス全体を移動します。</p>
+        <div class="control"><label for="backgroundScale">背景の倍率 <output id="backgroundScaleOut">100%</output></label><input id="backgroundScale" type="range" min="5" max="1200" step="1" value="100" disabled></div>
+        <div class="mini-actions"><button type="button" data-reset-background disabled>リセット</button></div>
+      </section>
+      <details class="advanced" id="paintAdvanced">
+        <summary><span>ブラシの詳細設定</span><span class="arrow">⌄</span></summary>
+        <div class="details-content">
+          <div class="toggle-row"><div class="toggle-label"><b>ペンの筆圧</b><small>ブラシサイズに反映します</small></div><label class="switch"><input id="pressure" type="checkbox" checked><span class="track"></span></label></div>
+        </div>
+      </details>
+    </div>
+    <div id="motionPanel" class="panel-view" role="tabpanel" aria-labelledby="tabMotion" hidden>
+      <section class="section motion-style-section" id="autoStyleSettings">
+        <div class="section-header"><div class="section-title"><span class="section-no">♪</span> 揺らし方</div></div>
+        <p class="section-lead">好きな動きを選び、「▶ 揺らす」でプレビューできます。</p>
+        <div class="presets motion-presets" id="presetGroup" role="group" aria-label="揺れ方の種類">
+          <button class="preset active" data-preset="circle" aria-pressed="true" title="時計回りの円運動。"><svg viewBox="0 0 48 32" aria-hidden="true"><path d="M24 4a12 12 0 1 1-12 12m-4 4 4-4 4 4"/></svg><span>Circle ↻</span></button>
+          <button class="preset" data-preset="circle-reverse" aria-pressed="false" title="反時計回りの円運動。"><svg viewBox="0 0 48 32" aria-hidden="true"><path d="M24 4a12 12 0 1 0 12 12m-4 4 4-4 4 4"/></svg><span>Circle ↺</span></button>
+          <button class="preset" data-preset="sway" aria-pressed="false" title="ゆっくり左右に往復。"><svg viewBox="0 0 48 32" aria-hidden="true"><path d="M5 16h38M11 10l-6 6 6 6m26-12 6 6-6 6"/><path d="M15 8q9-7 18 0"/></svg><span>Sway</span></button>
+          <button class="preset" data-preset="bounce" aria-pressed="false" title="上下に弾む。"><svg viewBox="0 0 48 32" aria-hidden="true"><path d="M24 3v22M18 9l6-6 6 6m-12 10 6 6 6-6M9 29h30"/></svg><span>Bounce</span></button>
+          <button class="preset" data-preset="pulse" aria-pressed="false" title="中心から伸縮。"><svg viewBox="0 0 48 32" aria-hidden="true"><circle cx="24" cy="16" r="5"/><path d="M24 2v5m0 18v5M5 16h8m22 0h8M20 6l4-4 4 4m-8 20 4 4 4-4M9 12l-4 4 4 4m30-8 4 4-4 4"/></svg><span>Pulse</span></button>
+          <button class="preset" data-preset="shake" aria-pressed="false" title="細かく素早く振動。"><svg viewBox="0 0 48 32" aria-hidden="true"><path d="m4 16 7-9 6 18 7-18 7 18 6-18 7 9"/></svg><span>Shake</span></button>
+        </div>
+        <p id="motionDescription" class="annotation" aria-live="polite">時計回りの円運動。</p>
+        <div class="control"><label for="intensity">強さ <output id="intensityOut"></output></label><input id="intensity" type="range" min="0" max="100" step="0.5" value="12.5"></div>
+        <div class="control"><label for="speed">速さ <output id="speedOut"></output></label><input id="speed" type="range" min="20" max="500" step="5" value="105"></div>
+        <div class="control"><label for="driveAngle">角度 <output id="driveAngleOut"></output><button id="resetDriveAngle" type="button" class="angle-reset" title="角度をリセット">↺</button></label><input id="driveAngle" type="range" min="-180" max="180" step="5" value="0" aria-describedby="driveAngleHint"><p class="annotation" id="driveAngleHint">揺れ方の向きを回転します。0°は元の向きです。</p></div>
+        <p class="annotation">強さは画像幅に対する割合です。</p>
+        <p class="annotation" id="driveWarning" hidden>柔らかい設定では大きく伸びる場合があります。</p>
+      </section>
+    </div>
+    <div id="materialPanel" class="panel-view" role="tabpanel" aria-labelledby="tabMaterial" hidden>
+      <section class="section">
+        <div class="section-header"><div class="section-title"><span class="section-no">02</span> 材質と反動</div></div>
+        <p class="section-lead">材質を選んで、やわらかさと余韻を調整します。</p>
+        <div class="presets" id="materialGroup">
+          <button class="preset" data-material="rubber">硬め</button>
+          <button class="preset active" data-material="jelly">標準</button>
+          <button class="preset" data-material="soft">やわらかめ</button>
+        </div>
+<div class="control"><label for="softness">やわらかさ <output id="softnessOut"></output></label><input id="softness" type="range" min="0" max="100" value="35"><p class="annotation">小さくすると硬く、大きくすると柔らかくなります。</p></div><div class="control"><label for="areaKeep">面積を保つ <output id="areaKeepOut"></output></label><input id="areaKeep" type="range" min="0" max="100" value="68"><p class="annotation">高くすると形がつぶれにくくなります。</p></div><div class="control"><label for="returnSpeed">戻る速さ <output id="returnSpeedOut"></output></label><input id="returnSpeed" type="range" min="0" max="100" value="48"></div><div class="control"><label for="damping">減衰 <output id="dampingOut"></output></label><input id="damping" type="range" min="0" max="100" value="32"><p class="annotation">小さくすると余韻が長く、大きくすると早く静まります。</p></div>
+<div class="control"><label for="anchor">範囲外の固定力 <output id="anchorOut"></output></label><input id="anchor" type="range" min="0" max="100" value="85"><p class="annotation">高くすると塗っていない部分が動きにくくなります。</p></div>
+      </section>
+      <details class="advanced" id="engineAdvanced">
+        <summary><span>計算品質</span><span class="arrow">⌄</span></summary>
+        <div class="details-content">
+          <div class="control"><label for="quality">メッシュの細かさ</label><select id="quality" class="select">
+            <option value="eco" selected>軽量 · 約1,100点</option><option value="balanced">標準 · 約2,400点</option><option value="fine">高密度 · 約4,600点</option></select></div>
+          <div class="control"><label for="substeps">計算頻度</label><select id="substeps" class="select">
+            <option value="2" selected>240 Hz · 軽量</option><option value="3">360 Hz · 標準</option><option value="5">600 Hz · 精密</option></select></div>
+          <div class="control"><label for="iterations">反復上限</label><select id="iterations" class="select">
+            <option value="2" selected>2回</option><option value="4">4回</option><option value="6">6回</option><option value="8">8回</option></select><p class="annotation">大きくすると精度が上がり、負荷が増えます。</p></div>
+          <div class="control"><label for="physicsBackend">計算方式</label><select id="physicsBackend" class="select">
+            <option value="wasm-scalar" selected>WASM</option><option value="js">JavaScript</option></select><p id="backendFallbackHint" class="annotation">WASMが利用できない場合はJavaScriptで計算します。</p></div>
+          <div class="control"><label for="renderMode">画像のなめらかさ</label><select id="renderMode" class="select">
+            <option value="smooth" selected>なめらか</option><option value="nearest">くっきり</option></select></div>
+          <output id="physicsStats" class="physics-stats">計測待機</output>
+        </div>
+      </details>
+    </div>
+    <details class="keyboard-details" id="shortcutHelp">
+      <summary>キーボード操作・ヘルプ ⌄</summary>
+      <div class="keyboard"><kbd>1</kbd> ツール設定　<kbd>2</kbd> 揺らし方<br><kbd>3</kbd> 材質・反動<br><kbd>B</kbd> 塗る　<kbd>E</kbd> 消す　<kbd>F</kbd> 輪郭<br><kbd>G</kbd> つかむ　<kbd>V</kbd> 画面移動＋慣性<br><kbd>H</kbd> 画面移動　<kbd>M</kbd> マスク<br><kbd>P</kbd> 自動揺れ ON/OFF　<kbd>0</kbd> 全体表示<br><kbd>Space</kbd> + ドラッグ 移動<br><kbd>Ctrl / ⌘ + Z</kbd> 元に戻す<br><kbd>Ctrl / ⌘ + Shift + Z</kbd> やり直す</div>
+    </details>
+    <div class="editor-footer-note">画像はブラウザ内で処理します。<div id="documentActions" class="document-actions"><button type="button" id="saveProject">編集を保存</button><button type="button" id="openProject">編集を開く</button><button type="button" id="restoreDocument" disabled>前の編集を復元</button></div><div class="legal-links"><button type="button" data-legal="terms" aria-haspopup="dialog" aria-controls="legalSheet">利用規約</button><button type="button" data-legal="privacy" aria-haspopup="dialog" aria-controls="legalSheet">プライバシーポリシー</button></div><div id="appInfo" class="app-info" data-i18n-skip><span id="appVersion" data-i18n-skip></span><a id="repositoryLink" target="_blank" rel="noopener noreferrer" title="GitHubリポジトリ（公開準備中）"><span>GitHub</span><small>準備中</small></a></div></div>
+  </aside>
+</div>
+</div>
+<div class="modal" id="helpModal" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+  <div class="dialog">
+    <div class="modal-head"><div><h2 id="helpTitle">操作ヘルプ</h2><p class="description">各ツールの使い方とショートカットを確認できます。</p></div><button id="closeHelp" type="button" class="dismiss" aria-label="ヘルプを閉じる">×</button></div>
+    <dl class="help-list">
+      <dt>ブラシ・消しゴム（B / E）</dt><dd>指定した動きやすさ（0〜255）を塗ります。0は強く固定、255は動きやすい状態。低い値でも上塗りできます。消しゴムは0に戻します。青→黄→赤で値を表示し、表示の濃さは動きに影響しません。<br>ブラシの右ドラッグは消しゴムとして使えます。</dd>
+      <dt>輪郭フィット（F）</dt><dd>選びたい物体の内側をクリック・タップして離すと、輪郭に沿ってマスクを追加します。</dd>
+      <dt>つかむ（G）</dt><dd>マスクを塗った部分をドラッグして引っぱります。離すと反動で揺れます。「力の分布」で1乗・2乗・正規分布を選べます。<br>右ドラッグで移動揺れを使えます。</dd>
+      <dt>移動揺れ（V）</dt><dd>画面をドラッグすると、移動・停止の加速度で画像が揺れます。</dd>
+      <dt>画面移動・ズーム（H / Space）</dt><dd>Hで移動ツールを選び、対象をキャンバス・背景から選べます。ドラッグで移動、スクロールで選択した対象を拡大縮小。Space＋ドラッグ・2本指は常にキャンバス全体の移動・ズームです。</dd>
+      <dt>揺らし方・材質</dt><dd>「揺らし方」で自動揺れの種類・強さ・速さ、「材質・反動」でやわらかさ・減衰・固定力を調整。「▶ 揺らす」（P）で自動揺れを開始・停止します。</dd>
+      <dt>表示・やり直し</dt><dd>ヘルプ横でテーマ・背景・操作範囲の円を切り替えます。↻で変形をリセット。Mでマスク表示、0で全体表示。Ctrl / ⌘ + Zで元に戻す、Ctrl / ⌘ + Shift + Zでやり直す。1 / 2 / 3で設定タブを切り替えます。</dd>
+    </dl>
+  </div>
+</div>
+<div class="modal" id="exportModal" role="dialog" aria-modal="true" aria-labelledby="exportTitle">
+  <div class="dialog">
+    <div class="modal-head"><div><h2 id="exportTitle">書き出し</h2><p class="description">前景・背景のどちらに保存範囲を合わせるか選べます。<br>画像データはブラウザから送信されません。</p></div><button id="closeExport" class="dismiss" aria-label="閉じる">×</button></div>
+    <div class="export-body">
+    <figure class="export-preview"><canvas id="exportPreview" aria-label="書き出しプレビュー"></canvas><figcaption id="exportDimensions" aria-live="polite"></figcaption></figure>
+    <div class="export-group"><label>形式</label><div class="export-choice"><button class="choice active" data-export-format="webm">動画</button><button class="choice" data-export-format="png">静止画 PNG</button></div><div class="subtle" style="margin-top:7px">動画はWebMまたはMP4、静止画はPNGで保存します。</div></div>
+    <div class="export-group"><div class="export-row"><label for="exportFrame">書き出し範囲</label><select class="select" id="exportFrame"><option value="foreground" selected>前景に合わせる</option><option value="background" disabled>背景に合わせる</option></select></div></div>
+    <div class="export-group"><div class="export-row"><label for="exportSize">最大解像度（長辺）</label><select class="select" id="exportSize"><option value="720" selected>720 px</option><option value="1080">1080 px</option><option value="1920">1920 px</option><option value="original">元サイズ（最大2800 px）</option></select></div></div>
+    <div class="export-group" id="durationGroup"><div class="export-row"><label for="exportDuration">録画時間</label><select class="select" id="exportDuration"><option value="3">3秒</option><option value="5" selected>5秒</option><option value="8">8秒</option></select></div></div>
+    <div class="export-group"><div class="export-row"><label for="exportBg">背景色</label><select class="select" id="exportBg"><option value="transparent">透明（PNG向け）</option><option value="white" selected>白</option><option value="dark">ダーク</option><option value="image" disabled>背景画像</option></select></div></div>
+    </div><div class="export-footer">
+    <div id="recordStatus" class="record-status">プレビューの範囲と背景で保存します。</div>
+    <button id="startExport" class="btn primary full">書き出しを開始</button>
+    </div>
+  </div>
+</div>
+<dialog id="settingsSheet" class="settings-sheet" aria-label="編集設定"></dialog>
+<dialog id="viewSheet" class="view-sheet" aria-labelledby="viewSheetTitle">
+  <div class="sheet-heading"><strong id="viewSheetTitle">表示・画像・ヘルプ</strong><button id="closeViewSheet" class="dismiss" type="button" aria-label="閉じる">×</button></div>
+  <div class="view-sheet-content">
+    <div id="viewPreferences" class="view-group"><p>言語・サンプル</p></div>
+    <div id="viewSamples" class="view-group"><p>サンプル</p></div>
+    <div id="viewDocuments" class="view-group"><p>編集データ</p></div>
+    <div id="viewAppearance" class="view-group"><p>表示</p></div>
+    <div class="view-group"><p>ツールの表示</p><label class="hide-tools-option"><input id="hideTopWithTools" type="checkbox" checked><span>上の操作も一緒に隠す</span></label></div>
+    <div id="viewZoom" class="view-group"><p>拡大・縮小</p></div>
+    <div class="view-group legal-links"><button type="button" data-legal="terms" aria-haspopup="dialog" aria-controls="legalSheet">利用規約</button><button type="button" data-legal="privacy" aria-haspopup="dialog" aria-controls="legalSheet">プライバシーポリシー</button></div>
+    <div id="viewAppInfo" class="view-group"></div>
+  </div>
+</dialog>
+<dialog id="maskSheet" class="view-sheet mask-sheet" aria-label="マスクの表示設定">
+  <div class="sheet-heading"><strong>マスクの表示設定</strong><button id="closeMaskSheet" class="dismiss" type="button" aria-label="閉じる">×</button></div>
+</dialog>
+<div id="toast" role="status" aria-live="polite"></div>
+<dialog id="legalSheet" class="view-sheet legal-sheet" aria-labelledby="legalTitle" data-i18n-skip>
+  <div class="sheet-heading"><strong id="legalTitle"></strong><button id="closeLegal" type="button" class="dismiss">×</button></div>
+  <div class="legal-nav"><button type="button" data-policy="terms" aria-pressed="true"></button><button type="button" data-policy="privacy" aria-pressed="false"></button><div class="legal-languages"><button type="button" data-legal-language="ja" aria-pressed="true">日本語</button><button type="button" data-legal-language="en" aria-pressed="false">English</button></div></div>
+  <article id="legalCopy" class="legal-copy"></article>
+</dialog>
+<script type="module" src="./src/main.js"></script>
+</body>
+</html>
