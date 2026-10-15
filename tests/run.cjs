@@ -5,6 +5,7 @@ const files=[
   "background-position.test.cjs",
   "background.test.cjs",
   "build.test.cjs",
+  "clipboard.test.cjs",
   "editor-features.test.cjs",
   "layout.test.cjs",
   "legal.test.cjs",

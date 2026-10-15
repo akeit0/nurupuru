@@ -170,6 +170,10 @@ header{position:relative;z-index:20}
 .stage-actions .select{height:28px;width:80px;font-size:11px;padding:0 6px}
 .stage-actions #stageBg{width:105px}
 .stage-actions .background-file-button{height:28px;font-size:11px;padding:0 8px;white-space:nowrap}
+.background-image-actions{display:flex;align-items:center;gap:6px;flex-wrap:wrap;min-width:0}
+.paste-destination{display:flex;align-items:center;gap:5px;font-size:11px;white-space:nowrap}
+.paste-destination kbd{font:inherit;color:var(--dim)}
+.stage-actions #pasteDestination{width:110px}
 .stage-help-button{height:28px;flex:0 0 auto;font-size:11px;padding:0 9px}
 .stage-icon-button{display:grid;place-items:center;width:28px;height:28px;min-width:28px;padding:0}
 .stage-icon-button svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round}
@@ -368,7 +372,9 @@ header{position:relative;z-index:20}
   .view-sheet .stage-actions .select{width:100%;grid-column:1 / span 3;height:44px;font-size:13px}
   .view-sheet .stage-actions .stage-bg-label{grid-column:1;font-size:11px;line-height:1.4;color:var(--dim)}
   .view-sheet .stage-actions #stageBg{width:100%;grid-column:2 / span 2}
-  .view-sheet .stage-actions #btnBackgroundUpload{grid-column:1 / span 2}
+  .view-sheet .stage-actions #btnPasteImage{grid-column:1 / -1}
+  .view-sheet .background-image-actions{grid-column:1 / -1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .view-sheet .background-image-actions #btnClearBackground{grid-column:1 / -1}
   .view-sheet .stage-actions .mobile-choices{grid-column:1 / -1}
   .view-sheet .stage-actions .footer-btn{width:100%;height:48px;font-size:12px}
   .view-sheet .stage-actions svg{width:22px;height:22px}

@@ -59,11 +59,18 @@
   <main class="stage-area">
     <div class="stage-title"><span class="dot"></span><strong id="fileLabel" data-i18n-skip>jelly-demo.png</strong><span id="dimensionsLabel">960 × 720 px</span><span id="recBadge" class="recording-pill">録画中</span><div class="stage-actions" role="group" aria-label="表示とヘルプ">
       <select id="theme" class="select" aria-label="テーマ"><option value="light">Light</option><option value="dark" selected>Dark</option></select>
+      <div class="paste-destination desktop-only" role="group" aria-label="画像の貼り付け" title="貼り付け先を選んでCtrl / ⌘ + V">
+        <label for="pasteDestination"><kbd>Ctrl / ⌘ + V</kbd> →</label><select id="pasteDestination" class="select" aria-label="貼り付け先"><option value="foreground">前景</option><option value="background">背景</option></select>
+      </div>
+      <button id="btnPasteImage" type="button" class="footer-btn background-file-button mobile-only">画像を貼り付け</button>
       <label for="stageBg" class="stage-bg-label mobile-only">キャンバス背景</label>
       <select id="stageBg" class="select" aria-label="キャンバス背景" title="背景画像は変形せず、前景の後ろに表示します。位置は移動ツールで調整できます。"><option value="checker">市松模様</option><option value="dark">暗い背景</option><option value="white">白い背景</option></select>
       <input id="backgroundInput" type="file" accept="image/png,image/jpeg,image/webp" class="hidden">
-      <button id="btnBackgroundUpload" type="button" class="footer-btn background-file-button" aria-label="背景画像を選択" title="背景画像を選択">背景画像を選択</button>
-      <button id="btnClearBackground" type="button" class="footer-btn background-file-button" aria-label="背景画像を削除" title="背景画像を削除" hidden>削除</button>
+      <div class="background-image-actions" role="group" aria-label="背景画像">
+        <button id="btnBackgroundUpload" type="button" class="footer-btn background-file-button" aria-label="背景画像を選択" title="背景画像を選択">背景画像を選択</button>
+        <button id="btnPasteBackground" type="button" class="footer-btn background-file-button mobile-only">背景画像を貼り付け</button>
+        <button id="btnClearBackground" type="button" class="footer-btn background-file-button" aria-label="背景画像を削除" title="背景画像を削除" hidden>削除</button>
+      </div>
       <button id="cursorToggle" type="button" class="footer-btn stage-icon-button cursor-toggle" aria-pressed="true" aria-label="操作範囲の円を非表示にする" title="操作範囲の円を非表示にする"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M4 20 20 4"/></svg></button>
       <button id="maskControlsToggle" type="button" class="footer-btn stage-icon-button mask-controls-toggle" aria-pressed="true" aria-controls="maskFloating" aria-label="マスク操作を非表示にする" title="マスク操作を非表示にする"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h6m6 0h6M3 18h2m6 0h10"/><circle cx="12" cy="6" r="3"/><circle cx="8" cy="18" r="3"/><path class="off-mark" d="M3 21 21 3"/></svg></button>
       <button id="btnHelp" type="button" class="footer-btn stage-help-button" aria-haspopup="dialog" aria-controls="helpModal">? ヘルプ</button></div></div>
@@ -203,7 +210,7 @@
     </div>
     <details class="keyboard-details" id="shortcutHelp">
       <summary>キーボード操作・ヘルプ ⌄</summary>
-      <div class="keyboard"><kbd>1</kbd> ツール設定　<kbd>2</kbd> 揺らし方<br><kbd>3</kbd> 材質・反動<br><kbd>B</kbd> 塗る　<kbd>E</kbd> 消す　<kbd>F</kbd> 輪郭<br><kbd>G</kbd> つかむ　<kbd>V</kbd> 画面移動＋慣性<br><kbd>H</kbd> 画面移動　<kbd>M</kbd> マスク<br><kbd>P</kbd> 自動揺れ ON/OFF　<kbd>0</kbd> 全体表示<br><kbd>Space</kbd> + ドラッグ 移動<br><kbd>Ctrl / ⌘ + Z</kbd> 元に戻す<br><kbd>Ctrl / ⌘ + Shift + Z</kbd> やり直す</div>
+      <div class="keyboard"><kbd>1</kbd> ツール設定　<kbd>2</kbd> 揺らし方<br><kbd>3</kbd> 材質・反動<br><kbd>B</kbd> 塗る　<kbd>E</kbd> 消す　<kbd>F</kbd> 輪郭<br><kbd>G</kbd> つかむ　<kbd>V</kbd> 画面移動＋慣性<br><kbd>H</kbd> 画面移動　<kbd>M</kbd> マスク<br><kbd>P</kbd> 自動揺れ ON/OFF　<kbd>0</kbd> 全体表示<br><kbd>Space</kbd> + ドラッグ 移動<br><kbd>Ctrl / ⌘ + Z</kbd> 元に戻す<br><kbd>Ctrl / ⌘ + Shift + Z</kbd> やり直す<br><kbd>Ctrl / ⌘ + V</kbd> <span>選択した前景・背景に貼り付け</span></div>
     </details>
     <div class="editor-footer-note">画像はブラウザ内で処理します。<div id="documentActions" class="document-actions"><button type="button" id="saveProject">編集を保存</button><button type="button" id="openProject">編集を開く</button><button type="button" id="restoreDocument" disabled>前の編集を復元</button></div><div class="legal-links"><button type="button" data-legal="terms" aria-haspopup="dialog" aria-controls="legalSheet">利用規約</button><button type="button" data-legal="privacy" aria-haspopup="dialog" aria-controls="legalSheet">プライバシーポリシー</button></div><div id="appInfo" class="app-info" data-i18n-skip><span id="appVersion" data-i18n-skip></span><a id="repositoryLink" target="_blank" rel="noopener noreferrer" title="GitHubリポジトリ（公開準備中）"><span>GitHub</span><small>準備中</small></a></div></div>
   </aside>
@@ -213,6 +220,7 @@
   <div class="dialog">
     <div class="modal-head"><div><h2 id="helpTitle">操作ヘルプ</h2><p class="description">各ツールの使い方とショートカットを確認できます。</p></div><button id="closeHelp" type="button" class="dismiss" aria-label="ヘルプを閉じる">×</button></div>
     <dl class="help-list">
+      <dt>画像の貼り付け（Ctrl / ⌘ + V）</dt><dd>PCではキャンバス上部で貼り付け先を「前景」「背景」から選び、Ctrl / ⌘ + Vで読み込みます。スマホではメニュー内の「画像を貼り付け」「背景画像を貼り付け」を使います。画像そのものをコピーしてください。</dd>
       <dt>ブラシ・消しゴム（B / E）</dt><dd>指定した動きやすさ（0〜255）を塗ります。0は強く固定、255は動きやすい状態。低い値でも上塗りできます。消しゴムは0に戻します。青→黄→赤で値を表示し、表示の濃さは動きに影響しません。<br>ブラシの右ドラッグは消しゴムとして使えます。</dd>
       <dt>輪郭フィット（F）</dt><dd>選びたい物体の内側をクリック・タップして離すと、輪郭に沿ってマスクを追加します。</dd>
       <dt>つかむ（G）</dt><dd>マスクを塗った部分をドラッグして引っぱります。離すと反動で揺れます。「力の分布」で1乗・2乗・正規分布を選べます。<br>右ドラッグで移動揺れを使えます。</dd>

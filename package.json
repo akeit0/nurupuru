@@ -1,6 +1,6 @@
 {
   "name": "nurupuru",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "description": "ぬるぷる — 画像を塗って、やわらかく動かすブラウザアプリ",
   "type": "module",

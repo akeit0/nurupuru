@@ -1,4 +1,4 @@
-export const APP_VERSION = '1.0.0';
+export const APP_VERSION = '1.0.1';
 export const GITHUB_REPOSITORY = 'https://github.com/akeit0/nurupuru';
 export const REPOSITORY_PUBLISHED = true;
 

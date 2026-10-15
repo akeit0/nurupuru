@@ -8,6 +8,7 @@ import { DEFAULT_PARAMS, MATERIAL_PRESETS } from './settings.js';
 import { readPreference, writePreference } from './preferences.js';
 import { t, getLanguage, setLanguage, translateUI } from './i18n.js';
 import { decodeImageFile } from './image-file.js';
+import { initImageClipboard } from './image-clipboard.js';
 import { initEditorLayout } from './editor-layout.js';
 import { initLegalUI } from './legal.js';
 import { writeProject, readProject } from './project-file.js';
@@ -45,7 +46,7 @@ let backgroundWheelBefore=null,backgroundWheelTimer=0,backgroundScaleBefore=null
 let exportUI=null;
 let previousDocument=null,documentLoad=0;
 let toastTimer;
-function toast(msg){const el=$('toast');el.textContent=t(msg);el.classList.add('visible');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('visible'),3200);}
+function toast(msg){const el=$('toast'),host=document.querySelector('dialog[open]')||document.body;if(el.parentElement!==host)host.append(el);el.textContent=t(msg);el.classList.add('visible');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('visible'),3200);}
 function eventDownload(blob,filename){const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),4000);}
 function baseName(){const file=$('fileLabel').textContent||'nurupuru';return file.replace(/\.[^.]+$/,'').replace(/[^\w\-ぁ-んァ-ン一-龠]/g,'_')||'nurupuru';}
 
@@ -681,7 +682,8 @@ settingTabs.forEach((tab,index)=>tab.addEventListener('keydown',e=>{
 window.addEventListener('blur',()=>{finishBackgroundWheel();if(action?.type==='backgroundPan')finishBackgroundChange(action.before);if(action?.type==='grab')mesh?.endGrab();cancelPainting();viewCoast=null;spaceDown=false;pointers.clear();action=null;hoverPointer=null;showPointerCursor();});
 stage.addEventListener('dragover',e=>{e.preventDefault();stage.classList.add('drag-over');});stage.addEventListener('dragleave',e=>{if(!stage.contains(e.relatedTarget))stage.classList.remove('drag-over');});
 stage.addEventListener('drop',e=>{e.preventDefault();stage.classList.remove('drag-over');loadFile(e.dataTransfer?.files?.[0]);});
-window.addEventListener('paste',e=>{if(document.querySelector('dialog[open]')||$('exportModal').classList.contains('open')||$('helpModal').classList.contains('open'))return;const f=[...e.clipboardData?.files||[]].find(x=>x.type.startsWith('image/'));if(f)loadFile(f);});
+initImageClipboard({loadImage:loadFile,loadBackground:loadBackgroundFile,toast,t,
+  isBlocked:()=>!!document.querySelector('dialog[open]')||$('exportModal').classList.contains('open')||$('helpModal').classList.contains('open')});
 // Resizing the backing canvas during observer delivery can feed back into layout.
 let resizeRaf=0;
 new ResizeObserver(()=>{if(!resizeRaf)resizeRaf=requestAnimationFrame(()=>{resizeRaf=0;resizeStage();requestRedraw();});}).observe(stage);
